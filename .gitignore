@@ -1,0 +1,25 @@
+# Entornos virtuales
+.venv/
+venv/
+
+# Bytecode y cachés de Python
+__pycache__/
+*.pyc
+
+# Cachés de herramientas
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+
+# Base de datos local (los datos se regeneran desde Binance;
+# el repo versiona CÓDIGO, no datos)
+*.db
+*.db-wal
+*.db-shm
+
+# IDEs
+.vscode/
+.idea/
+
+# Secretos (por si algún día usas claves API — nunca al repo)
+.env

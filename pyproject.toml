@@ -1,0 +1,93 @@
+# ============================================================
+# pyproject.toml — Configuración del proyecto y del tooling
+# ============================================================
+# Este archivo es el estándar moderno (PEP 518/621) para
+# configurar un proyecto Python y sus herramientas en UN solo
+# sitio, en vez de tener setup.py, .flake8, mypy.ini, etc.
+# CARNE DE ENTREVISTA: "¿por qué pyproject.toml?" → un único
+# archivo declarativo, estándar oficial, todas las herramientas
+# modernas lo leen.
+
+[project]
+name = "crypto-dashboard"
+version = "0.1.0"
+description = "Pipeline de trading de criptoactivos con dashboard (Proyecto Final Intro Python)"
+requires-python = ">=3.11"
+# >=3.11 porque: mejoras grandes de rendimiento en asyncio,
+# mejores mensajes de error, y asyncio.TaskGroup disponible.
+
+# ------------------------------------------------------------
+# BLACK — formateador de código
+# ------------------------------------------------------------
+# Qué hace: reescribe tu código con un estilo único y
+# determinista (comillas, saltos de línea, espacios).
+# Por qué: elimina TODA discusión de estilo. El código de
+# cualquier módulo se ve igual. Se ejecuta con: black src tests
+[tool.black]
+line-length = 100
+# 100 en vez del default (88): las líneas con nombres
+# financieros largos (symbol, trade_id, timestamps) respiran
+# mejor. Es una preferencia declarada, no un capricho: al
+# estar aquí escrita, todo el equipo (o tú en 2 semanas)
+# formatea igual.
+target-version = ["py311"]
+
+# ------------------------------------------------------------
+# RUFF — linter (detector de problemas)
+# ------------------------------------------------------------
+# Qué hace: analiza el código SIN ejecutarlo y avisa de:
+# imports sin usar, variables muertas, bugs típicos, código
+# sospechoso. Es el complemento de black: black formatea,
+# ruff detecta errores. Se ejecuta con: ruff check src tests
+[tool.ruff]
+line-length = 100      # coherente con black para no pelearse
+target-version = "py311"
+
+[tool.ruff.lint]
+# Cada letra activa una familia de reglas:
+select = [
+    "E",   # pycodestyle errors (estilo PEP8 básico)
+    "F",   # pyflakes (imports sin usar, variables no definidas)
+    "I",   # isort (orden de imports: stdlib → terceros → propios)
+    "B",   # flake8-bugbear (bugs sutiles: mutables como default, etc.)
+    "UP",  # pyupgrade (sintaxis moderna: list[int] en vez de List[int])
+    "ASYNC", # reglas específicas de asyncio (¡clave en este proyecto!)
+]
+# ASYNC es la más relevante para nosotros: detecta, por ejemplo,
+# llamadas bloqueantes (time.sleep) dentro de funciones async,
+# que congelarían el event loop → pregunta 6 de la memoria.
+
+# ------------------------------------------------------------
+# MYPY — tipado estático
+# ------------------------------------------------------------
+# Qué hace: verifica que los type hints sean coherentes SIN
+# ejecutar el código. Si una función declara devolver Trade y
+# devuelve None por un camino, mypy lo caza antes que un test.
+# Se ejecuta con: mypy src
+[tool.mypy]
+python_version = "3.11"
+strict = false
+# strict=false al inicio: el modo estricto exige tipar TODO
+# desde el día 1 y frena. Activamos comprobaciones útiles una
+# a una (abajo) y si vamos sobrados subimos a strict al final.
+check_untyped_defs = true      # revisa el cuerpo de funciones aunque no estén tipadas
+warn_return_any = true         # avisa si devuelves Any donde declaras un tipo concreto
+warn_unused_ignores = true     # avisa de "# type: ignore" que ya no hacen falta
+disallow_untyped_defs = false  # (por ahora) permite funciones sin tipar
+
+# En el dominio sí exigimos tipado completo desde ya:
+# las entidades (Trade, Candle, Position) son el corazón del
+# sistema y sus tipos son documentación viva.
+[[tool.mypy.overrides]]
+module = "src.domain.*"
+disallow_untyped_defs = true
+
+# ------------------------------------------------------------
+# PYTEST — configuración de tests
+# ------------------------------------------------------------
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+# asyncio_mode=auto: permite escribir "async def test_..."
+# directamente sin decorar cada test. Lo necesitaremos para
+# testear el pipeline de WebSocket.
