@@ -190,8 +190,9 @@ if __name__ == "__main__":
     from src.storage.database import get_connection, init_db, insert_candles
 
     async def main() -> None:
-        start_ms = int(time.time() * 1000) - 7 * 24 * 3600 * 1000  # hace 7 días
-        print("Descargando 7 días de velas 1h para 10 símbolos...")
+        DAYS = 90
+        start_ms = int(time.time() * 1000) - DAYS * 24 * 3600 * 1000
+        print(f"Descargando {DAYS} días de velas 1h para 10 símbolos...")
         data = await download_history(SYMBOLS, "1h", start_ms)
 
         conn = get_connection()
