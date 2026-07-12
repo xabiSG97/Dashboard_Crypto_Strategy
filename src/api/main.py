@@ -18,6 +18,8 @@ from collections.abc import Iterator
 
 from fastapi import Depends, FastAPI, HTTPException
 
+from datetime import datetime, timezone
+
 # Importar classic REGISTRA las tres estrategias (efecto import-time
 # de StrategyMeta). Sin este import, el registro estaría vacío.
 import src.strategies.classic  # noqa: F401  (import por efecto, no por nombre)
@@ -122,6 +124,27 @@ def get_pnl(
     returns = portfolio_returns(conn, strategy, interval)
     return {"strategy": strategy, "interval": interval, **pnl_summary(returns)}
 
+@app.get("/trades/{symbol}")
+def get_trades(
+    symbol: str,
+    limit: int = 50,
+    conn: sqlite3.Connection = Depends(get_db),
+) -> list[dict]:
+    """Últimos trades ingeridos por el WebSocket (tabla del dashboard).
+    side: si el comprador era maker, el agresor fue el vendedor => SELL."""
+    rows = conn.execute(
+        "SELECT trade_id, price, qty, event_time_ms, is_buyer_maker "
+        "FROM trades WHERE symbol = ? ORDER BY event_time_ms DESC LIMIT ?",
+        (symbol.upper(), limit),
+    ).fetchall()
+    return [
+        {
+            "trade_id": r[0], "price": r[1], "qty": r[2],
+            "time": datetime.fromtimestamp(r[3] / 1000, tz=timezone.utc).isoformat(),
+            "side": "SELL" if r[4] else "BUY",
+        }
+        for r in rows
+    ]
 
 @app.get("/metrics")
 def get_metrics(conn: sqlite3.Connection = Depends(get_db)) -> dict:
