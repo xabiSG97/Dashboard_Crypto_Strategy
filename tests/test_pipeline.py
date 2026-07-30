@@ -1,6 +1,6 @@
 """Test del pipeline histórico: carga -> persistencia -> procesado -> señal.
 
-Requisito del enunciado: "un test que valide el pipeline histórico
+"Un test que valide el pipeline histórico
 (carga → procesado → señal)". Y la pieza estrella (memoria, sección
 10): el FAKE EXCHANGE.
 

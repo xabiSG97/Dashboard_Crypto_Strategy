@@ -1,6 +1,6 @@
 """Instrumentación: decorador de medición de latencia.
 
-Requisito del enunciado: "un decorador personalizado aplicado en el
+ "Un decorador personalizado aplicado en el
 sistema real" (el retry con backoff no cuenta: lo cubre tenacity).
 Este decorador responde además, literalmente, a la memoria (sección 7
 avanzada): "diseña un decorador que mida latencia de funciones
@@ -26,7 +26,7 @@ from collections.abc import Callable
 
 # Registro de mediciones por nombre de función.
 # deque con maxlen: ventana deslizante de las últimas 10k mediciones.
-# CARNE DE ENTREVISTA: sin maxlen, un proceso de larga vida acumularía
+# Sin maxlen, un proceso de larga vida acumularía
 # mediciones sin límite => fuga de memoria. Es la MISMA idea que la
 # cola acotada del pipeline: toda estructura que crece con el tiempo
 # necesita una cota. Los patrones se repiten a todas las escalas.
@@ -46,7 +46,7 @@ def measure_latency(func: Callable) -> Callable:
       (FastAPI, sphinx, debugging) vería al impostor, no al original.
       "Sin alterar su firma" = functools.wraps.
 
-    CARNE DE ENTREVISTA — el caso async:
+    El caso async:
     si envolviéramos una corrutina con el wrapper síncrono, mediríamos
     el tiempo de CREAR el objeto corrutina (nanosegundos), porque
     llamar a una función async no la ejecuta: devuelve una corrutina
@@ -85,7 +85,7 @@ def measure_latency(func: Callable) -> Callable:
 def latency_report() -> dict[str, dict[str, float]]:
     """Percentiles por función: p50 (mediana), p95, p99.
 
-    CARNE DE ENTREVISTA — por qué percentiles y no la media:
+    Por qué percentiles y no la media:
     la media esconde las colas. Una función con p50=2ms y p99=800ms
     tiene media ~10ms ("todo bien") pero 1 de cada 100 llamadas es
     una catástrofe. p50 dice "lo típico", p95/p99 dicen "lo que

@@ -1,6 +1,5 @@
 """Capa de almacenamiento: SQLite con inserciones idempotentes.
 
-Decisiones clave (ver memoria, secciones 1 y 2):
 - UNIQUE + INSERT OR IGNORE => idempotencia garantizada por la BD,
   no por lógica de aplicación (menos superficie de bugs).
 - Modo WAL => lecturas concurrentes (dashboard) mientras se escribe (ingestor).
@@ -20,7 +19,6 @@ DEFAULT_DB_PATH = Path("data/market.db")
 def get_connection(db_path: Path = DEFAULT_DB_PATH) -> sqlite3.Connection:
     """Abre una conexión a SQLite con la configuración del proyecto.
 
-    CARNE DE ENTREVISTA — los tres PRAGMA:
     - journal_mode=WAL: escrituras van a un log aparte (write-ahead),
       lo que permite que N lectores lean MIENTRAS un escritor escribe.
       Con el modo por defecto (rollback journal), cada escritura
@@ -63,7 +61,6 @@ def init_db(conn: sqlite3.Connection) -> None:
         -- la tabla (clustered). Ahorra un índice duplicado y las
         -- búsquedas por (symbol, trade_id) van directas.
 
-        -- NOTA sobre REAL para precios (pregunta trampa de entrevista):
         -- REAL es float64 => precisión limitada (~15-16 dígitos).
         -- Para un sistema de contabilidad real usaríamos enteros en
         -- la unidad mínima o Decimal. Para análisis y visualización,
@@ -109,7 +106,7 @@ def insert_trade(
 
     Devuelve True si se insertó, False si ya existía (duplicado ignorado).
 
-    CARNE DE ENTREVISTA: INSERT OR IGNORE se apoya en la PRIMARY KEY
+    INSERT OR IGNORE se apoya en la PRIMARY KEY
     (symbol, trade_id). Si el trade ya existe, SQLite lo descarta
     ATÓMICAMENTE: no hay hueco entre "comprobar si existe" e "insertar"
     donde otro proceso pueda colarse (el clásico race condition del

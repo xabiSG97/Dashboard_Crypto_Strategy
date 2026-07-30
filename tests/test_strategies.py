@@ -1,6 +1,6 @@
-"""Tests unitarios de estrategias (requisito: al menos uno por estrategia).
+"""Tests unitarios de estrategias.
 
-Filosofía (memoria, sección 10): datos sintéticos DETERMINISTAS donde
+Filosofía : datos sintéticos DETERMINISTAS donde
 la señal esperada se calcula a mano ANTES de ejecutar. Si la
 estrategia dice otra cosa, la estrategia está mal. Esta es la defensa
 estructural contra el look-ahead y los errores silenciosos: un dataset

@@ -1,6 +1,6 @@
 """Dashboard Streamlit del portafolio de criptoactivos.
 
-Decisiones de arquitectura (memoria, sección de frontend):
+Decisiones de arquitectura :
 - El dashboard habla SOLO con la API de FastAPI, nunca con SQLite:
   es un cliente más (igual que Swagger). Las garantías de consistencia
   viven en el backend; puentearlo sería duplicar lógica sin garantías.
@@ -120,7 +120,7 @@ if strategy == "sma_cross":
                                  name=f"SMA{window}", line=dict(color=color)))
 
 # Señales sobre el precio: triángulo verde = +1, rojo = -1.
-# NOTA (carne de entrevista): el marcador se pinta en la vela donde
+# NOTA : el marcador se pinta en la vela donde
 # la señal NACE (t). El PnL, en cambio, ejecuta en t+1 (shift).
 # No es una inconsistencia: el gráfico responde "¿cuándo lo supe?"
 # y el PnL responde "¿cuándo pude actuar?". Dos preguntas, dos t.

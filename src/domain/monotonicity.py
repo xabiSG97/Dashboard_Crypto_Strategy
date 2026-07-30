@@ -6,7 +6,7 @@ un tick fuera de orden pertenece a quien consume los datos; separar
 detección de política es lo que hace al validador reutilizable y
 trivialmente testeable.
 
-Detalles de diseño defendibles:
+Detalles de diseño:
 - Timestamps IGUALES no son violación: varios trades en el mismo
   milisegundo son normales en mercados líquidos. Solo el RETROCESO
   estricto viola la monotonicidad (no-decreciente != creciente).
@@ -55,7 +55,7 @@ class MonotonicityValidator:
     def check(self, symbol: str, event_time_ms: int) -> MonotonicityViolation | None:
         """Valida un timestamp. Devuelve la violación si la hay, o None.
 
-        CARNE DE ENTREVISTA: la condición es `<` estricto, no `<=`.
+        La condición es `<` estricto, no `<=`.
         Igualdad permitida (varios eventos en el mismo ms), solo el
         retroceso es anomalía. "Monotonicidad no-decreciente".
         """

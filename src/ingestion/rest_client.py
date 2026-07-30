@@ -34,7 +34,7 @@ class RetryableAPIError(Exception):
     o errores 5xx del servidor. Un 400 (petición mal formada) NO está aquí:
     reintentar una petición inválida es repetir el mismo error más veces.
 
-    CARNE DE ENTREVISTA: la primera decisión de toda política de retry
+    La primera decisión de toda política de retry
     es clasificar errores en transitorios (reintentar) vs permanentes
     (fallar rápido y arreglar el código).
     """
@@ -134,7 +134,7 @@ async def fetch_klines(
                 float(k[5]), int(k[6]),
             ))
 
-        # CARNE DE ENTREVISTA — condición de parada de la paginación:
+        # Condición de parada de la paginación:
         # si la página vino INCOMPLETA (<1000), no hay más datos: fin.
         # Si vino llena, puede haber más: avanzamos el cursor a
         # close_time de la última vela + 1 ms (el +1 evita repedir
@@ -155,7 +155,7 @@ async def download_history(
 ) -> dict[str, list[tuple]]:
     """Descarga el histórico de varios símbolos con concurrencia limitada.
 
-    CARNE DE ENTREVISTA — por qué semáforo y no gather a pelo:
+    Por qué semáforo y no gather a pelo:
     los 10 símbolos a la vez multiplican por 10 el consumo de rate
     limit instantáneo. El semáforo deja como máximo 3 descargas
     en vuelo; las demás corrutinas esperan su turno SIN bloquear

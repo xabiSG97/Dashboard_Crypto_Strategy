@@ -53,7 +53,7 @@ def parse_trade(data: dict, ingestion_time_ms: int) -> Trade:
       s=symbol, t=trade_id, p=price (string), q=qty (string),
       T=trade time (ms, cuándo se ejecutó), m=is buyer maker.
 
-    CARNE DE ENTREVISTA: esta función es la FRONTERA entre el mundo
+    Esta función es la FRONTERA entre el mundo
     de Binance y nuestro dominio. Las claves crípticas ('p', 'q', 'T')
     no salen de aquí: el resto del sistema habla en Trade. Si mañana
     cambiáramos de exchange, se reescribe esta función, no el dominio
@@ -122,7 +122,7 @@ async def producer(queue: asyncio.Queue, symbols: list[str]) -> None:
 async def consumer(queue: asyncio.Queue, stats: dict) -> None:
     """Desencola trades, valida monotonicidad y persiste.
 
-    NOTA HONESTA (carne de entrevista): sqlite3 es SÍNCRONO, así que
+    Sqlite3 es SÍNCRONO, así que
     insert_trade bloquea el event loop unos microsegundos por trade.
     A nuestro caudal (decenas/s) es despreciable; a miles/s habría
     que sacarlo del loop (asyncio.to_thread) o insertar por lotes.

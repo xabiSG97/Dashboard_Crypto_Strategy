@@ -1,7 +1,6 @@
 """Entidades del dominio: Trade y Candle.
 
-Decisión central (memoria, secciones 2 y 5, y requisito de dunder
-methods del enunciado): la igualdad de una entidad se define por su
+Decisión central : la igualdad de una entidad se define por su
 IDENTIDAD, no por sus datos. Dos Trade con el mismo (symbol, trade_id)
 son EL MISMO trade aunque difieran en ingestion_time (p. ej. recibido
 dos veces tras una reconexión). Así, la noción de "mismo trade" es
@@ -18,7 +17,7 @@ from dataclasses import dataclass, field
 
 @dataclass(frozen=True, eq=False)
 # frozen=True  => inmutable: los atributos no se pueden reasignar.
-#   CARNE DE ENTREVISTA: un objeto HASHEABLE debe ser inmutable en
+#   Un objeto HASHEABLE debe ser inmutable en
 #   los campos que definen su hash. Si trade_id pudiera cambiar tras
 #   meter el Trade en un set, el set lo "perdería" (quedó guardado
 #   en el bucket de su hash viejo). frozen elimina esa clase de bug.
@@ -36,7 +35,7 @@ class Trade:
     is_buyer_maker: bool
 
     # ------------------------------------------------------------------
-    # DUNDER #1 y #2 (requisito del enunciado): __eq__ y __hash__
+    # DUNDER #1 y #2: __eq__ y __hash__
     # con finalidad semántica: igualdad = identidad de mercado.
     # ------------------------------------------------------------------
     def __eq__(self, other: object) -> bool:

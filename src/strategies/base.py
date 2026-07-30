@@ -1,6 +1,6 @@
 """Base de estrategias: metaclase con validación y auto-registro.
 
-Requisito del enunciado: "una metaclase con responsabilidad concreta".
+"Una metaclase con responsabilidad concreta".
 La responsabilidad de StrategyMeta es doble y muy concreta:
 
 1. VALIDAR EL CONTRATO en tiempo de definición de clase (import-time):
@@ -14,7 +14,7 @@ La responsabilidad de StrategyMeta es doble y muy concreta:
    (el endpoint /signals de FastAPI leerá este registro).
    Principio open/closed: abierto a extensión, cerrado a modificación.
 
-CARNE DE ENTREVISTA — cuándo corre cada cosa:
+Cuándo corre cada cosa:
 - metaclase.__new__  -> al DEFINIR la clase (import del módulo)
 - Strategy.__init__  -> al INSTANCIAR un objeto
 La validación en import-time es la ventaja frente a alternativas:
